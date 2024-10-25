@@ -1,0 +1,19 @@
+services:
+  grpc:
+    restart: unless-stopped
+    image: fin
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ./app grpc
+    environment:
+    - CONFIG_FILE_NAME=develop
+    - CONFIG_FILE_TYPE=env
+    networks:
+    - fin_network
+    ports:
+    - 11012:9000
+networks:
+  fin_network:
+    external: true
+    driver: bridge

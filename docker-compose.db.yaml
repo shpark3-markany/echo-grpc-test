@@ -1,0 +1,22 @@
+services:
+  maria:
+    restart: unless-stopped
+    image: mariadb
+    ports:
+    - 11010:3306
+    environment:
+      MARIADB_ROOT_PASSWORD: 1234
+      MARIADB_USER: root
+    healthcheck:
+      test: 'mariadb-admin ping -h localhost -u root --password=1234'
+      interval: 5s
+      timeout: 2s
+      retries: 5
+    volumes:
+    - ./db:/var/lib/mysql
+    networks:
+      - fin_network
+networks:
+  fin_network:
+    external: true
+    driver: bridge

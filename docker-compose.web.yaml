@@ -1,0 +1,24 @@
+services:
+  web:
+    restart: unless-stopped
+    image: fin
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ./app web
+    healthcheck:
+      test: 'curl -i localhost:8080/healthcheck'
+      interval: 10s
+      timeout: 3s
+      retries: 3
+    environment:
+    - CONFIG_FILE_NAME=develop
+    - CONFIG_FILE_TYPE=env
+    networks:
+    - fin_network
+    ports:
+    - 11011:8080
+networks:
+  fin_network:
+    external: true
+    driver: bridge
