@@ -1,6 +1,6 @@
 *.csv
 go.*
-# note.md
+_*
 db/
 .vscode/
 scripts/

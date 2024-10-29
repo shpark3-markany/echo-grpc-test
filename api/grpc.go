@@ -91,29 +91,29 @@ func (s UserInfoServer) CreateUser(c context.Context, req *pb.CreateUserRequest)
 	}, nil
 }
 
-func (s UserInfoServer) UpdateUser(c context.Context, req *pb.UpdateUserRequest) (res *pb.UpdateUserResponse, err error) {
-	defer func() {
-		if r := recover(); r != nil {
-			log.Printf("api.grpc.UpdateUser: %v", r)
-			utils.ErrLogging()
-		}
-	}()
-	user := req.User
-	obj := forms.UserForm{
-		Email:    user.Email,
-		UserName: user.UserName,
-		Password: user.Password,
-		Age:      user.Age,
-		Phone:    user.Phone,
-		Address:  user.Address,
-	}
-	if err := ctl.Update(req.Id, &obj); err != nil {
-		return res, err
-	}
-	return &pb.UpdateUserResponse{
-		Response: "update successed",
-	}, nil
-}
+// func (s UserInfoServer) UpdateUser(c context.Context, req *pb.UpdateUserRequest) (res *pb.UpdateUserResponse, err error) {
+// 	defer func() {
+// 		if r := recover(); r != nil {
+// 			log.Printf("api.grpc.UpdateUser: %v", r)
+// 			utils.ErrLogging()
+// 		}
+// 	}()
+// 	user := req.User
+// 	obj := models.UserModel{
+// 		Email:    user.Email,
+// 		UserName: user.UserName,
+// 		Password: user.Password,
+// 		Age:      user.Age,
+// 		Phone:    user.Phone,
+// 		Address:  user.Address,
+// 	}
+// 	if err := ctl.Update(req.Id, &obj); err != nil {
+// 		return res, err
+// 	}
+// 	return &pb.UpdateUserResponse{
+// 		Response: "update successed",
+// 	}, nil
+// }
 
 func (s UserInfoServer) DeleteUser(c context.Context, req *pb.DeleteUserRequest) (res *pb.DeleteUserResponse, err error) {
 	defer func() {

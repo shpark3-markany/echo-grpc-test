@@ -21,7 +21,7 @@ import (
 // @host 127.0.0.1:11011
 // @BasePath /
 
-func PostFile(c echo.Context, key string) (users []*models.UserModel, err error) {
+func PostFile(c echo.Context, key string) (users []models.UserModel, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			log.Printf("api.rest.PostFile: %v", r)
@@ -139,30 +139,30 @@ func CreateUser(c echo.Context) error {
 // @Failure         400 {object} ReturnError "invalid data(Query or Body)"
 // @Failure         500 {object} ReturnError "errors in database"
 // @Router         	/updadte [put]
-func UpdateUser(c echo.Context) error {
-	defer func() {
-		if r := recover(); r != nil {
-			log.Printf("api.rest.UpdateUser: %v", r)
-			utils.ErrLogging()
-		}
-	}()
+// func UpdateUser(c echo.Context) error {
+// 	defer func() {
+// 		if r := recover(); r != nil {
+// 			log.Printf("api.rest.UpdateUser: %v", r)
+// 			utils.ErrLogging()
+// 		}
+// 	}()
 
-	id := c.QueryParam("id")
-	conv_id, err := strconv.ParseUint(id, 10, 64)
-	if err != nil {
-		c.Set("error", err)
-		return c.JSONPretty(http.StatusBadRequest, ReturnError{ErrorMessage: err.Error()}, "  ")
-	}
-	user := new(forms.UserForm)
-	if err := c.Bind(user); err != nil {
-		return c.JSONPretty(http.StatusBadRequest, ReturnError{ErrorMessage: err.Error()}, "  ")
-	}
+// 	id := c.QueryParam("id")
+// 	conv_id, err := strconv.ParseUint(id, 10, 64)
+// 	if err != nil {
+// 		c.Set("error", err)
+// 		return c.JSONPretty(http.StatusBadRequest, ReturnError{ErrorMessage: err.Error()}, "  ")
+// 	}
+// 	user := new(models.UserModel)
+// 	if err := c.Bind(user); err != nil {
+// 		return c.JSONPretty(http.StatusBadRequest, ReturnError{ErrorMessage: err.Error()}, "  ")
+// 	}
 
-	if err := controllers.Update(conv_id, user); err != nil {
-		return c.JSONPretty(http.StatusInternalServerError, ReturnError{ErrorMessage: err.Error()}, "  ")
-	}
-	return c.JSONPretty(http.StatusCreated, ReturnMessage{Message: fmt.Sprintf("User (id = %v) successfuly updated", id)}, "  ")
-}
+// 	if err := controllers.Update(conv_id, user); err != nil {
+// 		return c.JSONPretty(http.StatusInternalServerError, ReturnError{ErrorMessage: err.Error()}, "  ")
+// 	}
+// 	return c.JSONPretty(http.StatusCreated, ReturnMessage{Message: fmt.Sprintf("User (id = %v) successfuly updated", id)}, "  ")
+// }
 
 // @Summary        	Delete exist record
 // @Description    	Delete record using primary key(id)

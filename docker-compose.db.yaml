@@ -15,7 +15,7 @@ services:
     volumes:
     - ./db:/var/lib/mysql
     networks:
-      - fin_network
+    - fin_network
 networks:
   fin_network:
     external: true

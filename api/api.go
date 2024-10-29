@@ -161,7 +161,7 @@ func OpenWeb(web_port string) {
 	e.GET("/get", GetUser)
 	e.GET("/list", ListUser)
 	e.POST("/create", CreateUser)
-	e.PUT("/update", UpdateUser)
+	// e.PUT("/update", UpdateUser)
 	e.DELETE("/delete", DeleteUser)
 	e.POST("/batch-save", BatchSave)
 	e.DELETE("/batch-delete", BatchDelete)

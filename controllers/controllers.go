@@ -26,7 +26,7 @@ var (
 // (Get, List, Create, Update, Delete, Reset)
 func Get(id uint64) (*models.UserModel, error) {
 	var user *models.UserModel
-	if err := db.Model(&models.UserModel{}).Where("id = ?", id).First(&user).Error; err != nil {
+	if db.Model(&models.UserModel{}).Where("id = ?", id).Find(&user); user.Id == 0 {
 		return nil, errNotFound
 	}
 	return user, nil
@@ -49,18 +49,24 @@ func Create(user *forms.UserForm) error {
 		Phone:    user.Phone,
 		Address:  user.Address,
 	}
-	if err := db.Model(&models.UserModel{}).Create(&obj).Error; err != nil {
+	tx := db.Begin()
+	if err := tx.Model(&models.UserModel{}).Create(&obj).Error; err != nil {
 		return err
 	}
+	tx.Commit()
 	return nil
 }
 
-func Update(id uint64, update_user *forms.UserForm) error {
-	if err := db.Model(&models.UserModel{}).Where("id = ?", id).Updates(update_user).Error; err != nil {
-		return err
-	}
-	return nil
-}
+// TODO: lifecicle hook error
+// func Update(id uint64, update_user *models.UserModel) error {
+// 	var user models.UserModel
+// 	db.Model(&models.UserModel{Id: id}).Find(&user)
+// 	log.Print(user)
+// 	if err := db.Model(&user).Where("id = ?", id).Updates(&update_user).Error; err != nil {
+// 		return err
+// 	}
+// 	return nil
+// }
 
 func Delete(id uint64) error {
 	if err := db.Model(&models.UserModel{}).Delete("id = ?", id).Error; err != nil {
@@ -82,11 +88,11 @@ func Reset() error {
 
 // Batch
 // (BSave, BDelete)
-func BSave(users []*models.UserModel) error {
+func BSave(users []models.UserModel) error {
 	tx := db.Begin()
 	defer tx.Rollback()
 	for _, user := range users {
-		if err := tx.Model(&models.UserModel{}).Where("id = ?", user.Id).Save(&user).Error; err != nil {
+		if err := tx.Model(&user).Save(&user).Error; err != nil {
 			return err
 		}
 	}
@@ -94,9 +100,14 @@ func BSave(users []*models.UserModel) error {
 	return nil
 }
 
-func BDelete(users []*models.UserModel) error {
-	if err := db.Model(&models.UserModel{}).Delete(&users).Error; err != nil {
-		return err
+func BDelete(users []models.UserModel) error {
+	tx := db.Begin()
+	defer tx.Rollback()
+	for _, user := range users {
+		if err := tx.Model(&models.UserModel{}).Delete(&user).Error; err != nil {
+			continue
+		}
 	}
+	tx.Commit()
 	return nil
 }
